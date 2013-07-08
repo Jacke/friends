@@ -1,0 +1,44 @@
+= form_for task do |form|
+  %fieldset.row-fluid
+    .btn-group{"style" => "position: relative", "ng-init" => "preloadCity(#{current_person_cid})", 'ng-controller' => 'CitySelector'}
+      %a.btn.dropdown-toggle{"href" => "#", "ng-click" => "cityComboBoxOpen = !cityComboBoxOpen", "ng-class" => "activeIf(cityComboBoxOpen)"}
+        %input{"type" => "hidden", "value" => "{{selectedCity.cid}}", "name" => "task[cid]"}
+        {{selectedCity.title}}
+        %span.caret
+      %ul.dropdown-menu{"style" => true, "ng-show" => 'cityComboBoxOpen'}
+        %li
+          %input{"type" => "text", "ng-model" => "citySearch", "placeholder" => 'Введите город', "style" => "width: "}
+        %li{"ng-repeat" => "city in loadedCities"}
+          %a{"href" => "#", "ng-click" => "selectCity(city)"}
+            %ul.unstyled
+              %li {{city.title}}
+              %li
+                %small {{city.region}}
+          %hr
+    %br
+    %br
+    = form.label :title, 'Название'
+    = form.text_field :title, class: 'span12'
+
+    = form.label :description, 'Описание'
+    = form.text_area :description, rows: 6, class: 'span12'
+    
+    = form.label :tag_list, 'Добавить тег'
+    %div{'ng-controller' => 'TagInput', 'ng-init' => "loadTags(#{tag_list.to_json})"}
+      = form.hidden_field :tag_list, value: "{{selectedTags.join()}}"
+      .span12{'ng-init' => "selectedTags = #{task.tags}"}
+        %span.selected_tag{'ng-repeat' => 'tag in selectedTags', 'ng-click' => 'deselectTag(tag)'} {{tag}}
+        %a{"href" => "#", "ng-click" => "clearTags()", "ng-show" => "selectedTags.length > 0"}Очистить
+      .input-append
+      .row-fluid{"ng-show" => "selectedTags.length < 3"}
+        .input-append
+          %input{"type" => "text", "ng-model" => "tagSearch", "placeholder" => "Поиск тега"}
+          %a.btn{"href" => "#", 'ng-click' => 'add(tagSearch)'}
+            %i.icon-plus
+      .row-fluid{"ng-show" => "selectedTags.length < 3"}
+        %ul.inline.tags-cloud
+          %li.tag{'ng-repeat' => 'tag in tags | filter:tagSearch', "ng-click" => "selectTag(tag)"} {{tag}}
+
+  .form-actions
+    = form.submit 'Опубликовать', class: 'btn btn-primary'
+    = link_to 'Отмена', root_url(query: {scope: 'own'}), class: 'btn'

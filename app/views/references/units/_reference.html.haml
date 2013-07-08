@@ -1,0 +1,25 @@
+.row-fluid
+  - if reference.referencer_uid == reference.referenced_uid
+    .span4
+  .span2.text-center
+    %a{'href' => "http://vk.com/id#{reference.referencer_uid}", 'target' => '_blank'}
+      %img{src: "{{person(#{reference.referencer_uid}).photo}}"}
+      %br
+      {{person(#{reference.referencer_uid}).first_name}}
+      {{person(#{reference.referencer_uid}).nickname}}
+      {{person(#{reference.referencer_uid}).last_name}}
+  - unless reference.referencer_uid == reference.referenced_uid
+    .span2.text-center
+      %br
+      %i.icon-thumbs-up
+      %br
+      Рекоммендует
+    .span2.text-center
+      %a{'href' => "http://vk.com/id#{reference.referenced_uid}", 'target' => '_blank'}
+        %img{src: "{{person(#{reference.referenced_uid}).photo}}"}
+        %br
+        {{person(#{reference.referenced_uid}).first_name}}
+        {{person(#{reference.referenced_uid}).nickname}}
+        {{person(#{reference.referenced_uid}).last_name}}
+  
+  .span6= reference.description

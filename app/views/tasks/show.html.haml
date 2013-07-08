@@ -1,0 +1,18 @@
+= render 'tasks/units/task', task: @task
+
+- if flash[:notice]
+  %br
+  .alert.alert-success= flash[:notice][:message]
+  :javascript
+    VK.init(function() { 
+      VK.callMethod("showRequestBox", #{flash[:notice][:referenced_uid]}, 'Я рекомендовал тебя для объявления "#{@task.title}"', 0);
+    });
+
+- if current_person_uid == @task.requester_uid
+  - unless @task.references.blank?
+    %p.lead Рекоммендации
+  - @task.references.each do |reference|
+    = render 'references/units/reference', reference: reference
+    
+%hr
+= render 'layouts/back'
